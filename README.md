@@ -149,4 +149,7 @@ discord-bot/
 ---
 
 ## 📄 License
-ISC License. Feel free to use and modify for your servers!
+
+This project is licensed under the **MIT License** - Copyright (c) 2026 **HikaruIR**.
+
+You are completely free to download, use, inspect, fork, and modify this project for your Discord servers, provided that the original copyright notice and permission notice remain intact. See the [LICENSE](LICENSE) file for the full license text.
