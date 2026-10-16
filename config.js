@@ -1,42 +1,37 @@
 module.exports = {
   defaultPrefix: '!',
   brand: {
-    name: 'Ocean Shop',
-    footer: 'Ocean Shop • Premium Digital Store',
+    name: 'Sevinnny',
+    footer: 'Sevinnny Server • Official Bot',
     avatar: 'https://cdn.discordapp.com/emojis/1049282384668471346.webp?size=96&quality=lossless'
   },
   colors: {
-    primary: '#00A8FF',     // Ocean Cyan / Blue
-    oceanDark: '#0A192F',   // Deep Ocean Navy
-    success: '#00E676',     // Vibrant Success Green
-    warning: '#FFD166',     // Warning Gold
-    danger: '#FF4757',      // Vibrant Coral Red
-    shop: '#00D2D3',        // Ocean Teal Shop
-    ticket: '#2ED573',      // Mint Ticket Green
-    neutral: '#1E272E',     // Sleek Dark
-    receipt: '#10AC84'      // Receipt Emerald
+    primary: '#9b59b6',     // Elegant Purple / Sevinnny Brand
+    success: '#2ecc71',     // Success Green
+    warning: '#f1c40f',     // Warning Gold
+    danger: '#e74c3c',      // Coral Red
+    neutral: '#2c3e50',     // Dark Slate
+    music: '#3498db'        // Music Blue
   },
   emojis: {
-    shop: '🛒',
-    buy: '💳',
-    ticket: '🎫',
-    warranty: '🛡️',
-    stock: '📦',
-    price: '💰',
+    music: '🎵',
+    mod: '🛡️',
+    ban: '🔨',
+    mute: '🔇',
+    unmute: '🔊',
+    timeout: '⏳',
+    quarantine: '☣️',
     lock: '🔒',
     unlock: '🔓',
-    delete: '🗑️',
-    claim: '✋',
+    hide: '👁️‍🗨️',
+    show: '👁️',
+    welcome: '👋',
+    news: '📢',
+    live: '🔴',
+    media: '🎬',
+    poll: '📊',
     success: '✅',
     error: '❌',
-    loading: '⏳',
-    support: '🛎️',
-    order: '🧾',
-    sparkles: '✨',
-    card: '💳',
-    giveaway: '🎉',
-    hide: '👁️‍🗨️',
-    unhide: '👁️',
-    op: '⚡'
+    warning: '⚠️'
   }
 };

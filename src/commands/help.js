@@ -3,75 +3,75 @@ const config = require('../../config');
 
 module.exports = {
   name: 'help',
-  description: 'Complete Ocean Bot command list and system guide',
+  aliases: ['h', 'commands'],
+  description: 'List all commands and capabilities for Sevinnny server',
   async execute(message, args) {
+    const prefix = process.env.PREFIX || config.defaultPrefix || '!';
+
     const embed = new EmbedBuilder()
-      .setTitle(`${config.emojis.shop} ${config.brand.name} Command Guide`)
-      .setDescription(
-        `Multi-purpose management platform with advanced private ticket departments, full moderation suite, join & invite logger, giveaways, and automated keyword responses.\n\n` +
-        `**Default Prefix:** \`${process.env.PREFIX || '!'}\` | Supported via Slash Commands (/) and Prefix (!).`
-      )
-      .setColor('#5865F2')
+      .setColor(config.colors.primary)
+      .setTitle(`✨ ${config.brand.name} Bot Commands Menu`)
+      .setDescription(`Welcome to **${config.brand.name}** official bot! Prefix: \`${prefix}\``)
       .addFields(
         {
-          name: '🛡️ Moderation System',
+          name: '🛡️ Moderation Commands',
           value:
-            '`!lock [#channel]` - Lock a channel from sending messages\n' +
-            '`!unlock [#channel]` - Unlock a locked channel\n' +
-            '`!hide [#channel]` - Hide a channel from @everyone\n' +
-            '`!unhide [#channel]` - Make channel visible again\n' +
-            '`!purge <1-100>` - Bulk delete messages\n' +
-            '`!slow <seconds>` - Set channel slowmode\n' +
-            '`!kick @user [reason]` - Kick a member\n' +
-            '`!ban @user [reason]` - Permanently ban a member\n' +
-            '`!unban <user_id>` - Unban a user\n' +
-            '`!to @user <duration> [reason]` - Timeout member (e.g. 10m, 1h)\n' +
-            '`!unto @user` - Remove timeout from member'
+            `\`${prefix}ban [user] [reason] [time]\` - Ban permanently or temporarily\n` +
+            `\`${prefix}unban [user-id]\` - Unban member\n` +
+            `\`${prefix}mute [user] [reason] [time]\` - Mute member (with auto-unmute)\n` +
+            `\`${prefix}unmute [user]\` - Unmute member\n` +
+            `\`${prefix}timeout [user] [reason] [time]\` - Discord native timeout\n` +
+            `\`${prefix}untimeout [user]\` - Remove timeout\n` +
+            `\`${prefix}qr [user] [reason] [time]\` - Quarantine member (hides all channels)\n` +
+            `\`${prefix}unqr [user]\` - Remove quarantine and restore roles\n` +
+            `\`${prefix}logchannel [channel] [set/unset]\` - Configure log channel`
         },
         {
-          name: '👋 Welcome & Invite Logger',
+          name: '🔒 Channel Controls',
           value:
-            '`!welcome set #channel` - Configure join / welcome logger channel\n' +
-            '`!welcome test` - Test the exact welcome embed design\n' +
-            '`!invites [@user]` - Check regular, leaves, fake, and total invites'
+            `\`${prefix}lock [channel]\` - Lock channel from sending messages\n` +
+            `\`${prefix}unlock [channel]\` - Unlock channel\n` +
+            `\`${prefix}hide [channel]\` - Hide channel from @everyone\n` +
+            `\`${prefix}show [channel]\` - Make channel visible to @everyone`
         },
         {
-          name: '🎫 Private Ticket System',
+          name: '👋 Welcome System (Embed & Square Profile)',
           value:
-            '`!ticket panel` - Deploy interactive ticket panel with select menu & buttons\n' +
-            '`!ticket create <type>` - Open a private ticket directly\n' +
-            '`!ticket add @user` - Grant member access to current ticket\n' +
-            '`!ticket remove @user` - Revoke member access from current ticket\n' +
-            '`!ticket setcategory <type> <cat_id>` - Set category per department\n' +
-            '*Controls:* 🔒 Close | 🔓 Reopen | ✋ Claim | ➕ Add | ➖ Remove | 🗑️ Delete (Auto-Transcript)'
+            `\`${prefix}welcome setup [message] [channel]\` - Variables: \`<user>\`, \`<server>\`, \`<membersnow>\`\n` +
+            `\`${prefix}welcome test\` - Test welcome embed in configured channel\n` +
+            `\`${prefix}welcome delete\` - Disable welcome system`
         },
         {
-          name: '🎉 Giveaway System',
+          name: '📢 News & Announcers',
           value:
-            '`!giveaway start <time> <winners>w <prize>` - Launch interactive giveaway\n' +
-            '`!giveaway reroll <message_id>` - Pick new winners\n' +
-            '`!giveaway end <message_id>` - End giveaway immediately\n' +
-            '`!giveaway list` - View active giveaways'
+            `\`${prefix}livenews [enable/disable] [channel] [message] [liveurl] [mentions]\` - Stream auto alert\n` +
+            `\`${prefix}medianews [enable/disable] [channel] [message] [mediaurl] [mentions]\` - Media auto alert`
         },
         {
-          name: '🔑 Keyword Auto-Replies & Triggers',
+          name: '🎵 Music Player (YouTube, Spotify, SoundCloud, Search)',
           value:
-            '`!keyword add <word> <response>` - Register automatic response\n' +
-            '`!keyword remove <word>` - Remove automatic response\n' +
-            '`!keyword list` - List registered keywords\n' +
-            '`!trigger add <response>` - Automated response when receipt image is uploaded'
+            `\`${prefix}play [song name/url]\` - Play or search music\n` +
+            `\`${prefix}pause\` / \`${prefix}resume\` - Pause or resume playback\n` +
+            `\`${prefix}stop\` - Stop playing & clear queue\n` +
+            `\`${prefix}next\` / \`${prefix}skip\` - Skip current track\n` +
+            `\`${prefix}previous\` - Play previous track\n` +
+            `\`${prefix}queue\` - View upcoming songs\n` +
+            `\`${prefix}nowplaying\` - View currently playing song\n` +
+            `\`${prefix}join\` / \`${prefix}leave\` - Connect/disconnect from voice`
         },
         {
-          name: '⚙️ Configuration & Logging',
+          name: '📊 Reaction Polls',
           value:
-            '`!config setstaff @Role` - Add staff role\n' +
-            '`!config setlog #channel` - Configure audit log channel\n' +
-            '`!config view` - View current settings'
+            `\`${prefix}poll [question]\` - Yes / No reaction poll\n` +
+            `\`${prefix}poll "Question" "Opt 1" "Opt 2"\` - Multiple-choice poll`
         }
       )
-      .setFooter({ text: `${config.brand.footer} • Watching Ocean🐋`, iconURL: config.brand.avatar })
+      .setFooter({
+        text: config.brand.footer,
+        iconURL: message.guild.iconURL({ dynamic: true }) || config.brand.avatar
+      })
       .setTimestamp();
 
-    return message.channel.send({ embeds: [embed] });
+    return message.reply({ embeds: [embed] });
   }
 };

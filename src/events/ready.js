@@ -1,6 +1,8 @@
 const { ActivityType, Events, REST, Routes } = require('discord.js');
-const { initGiveawayTicker } = require('../handlers/giveawayHandler');
 const { initTempbanTicker } = require('../handlers/tempbanHandler');
+const { initMuteTicker } = require('../handlers/muteHandler');
+const { initQuarantineTicker } = require('../handlers/quarantineHandler');
+const { initActivitySwitcher } = require('../handlers/activityHandler');
 const config = require('../../config');
 
 module.exports = {
@@ -10,27 +12,9 @@ module.exports = {
     console.log(`========================================`);
     console.log(`✅ Logged in successfully as: ${client.user.tag}`);
     console.log(`🤖 Bot ID: ${client.user.id}`);
-    console.log(`🛍️ Ocean Shop Engine: Active`);
+    console.log(`✨ ${config.brand.name} Engine: Active`);
     console.log(`🌐 Serving ${client.guilds.cache.size} server(s)`);
     console.log(`========================================`);
-
-    // Set bot presence
-    try {
-      client.user.setStatus('dnd');
-      client.user.setActivity('Ocean🐋', { type: ActivityType.Watching });
-      client.user.setPresence({
-        activities: [
-          {
-            name: 'Ocean🐋',
-            type: ActivityType.Watching
-          }
-        ],
-        status: 'dnd'
-      });
-      console.log('⚡ Presence successfully configured: DND | Watching Ocean🐋');
-    } catch (presenceErr) {
-      console.warn('Presence configuration warning:', presenceErr.message);
-    }
 
     // Register Slash Commands
     try {
@@ -55,20 +39,14 @@ module.exports = {
       console.error('Failed to register application slash commands:', err);
     }
 
-    // Initialize background tickers and invite tracker
+    // Initialize background tickers and 2-minute activity loop
     try {
-      initGiveawayTicker(client);
       initTempbanTicker(client);
-      const { initMuteTicker } = require('../handlers/muteHandler');
       initMuteTicker(client);
-      const { initQuarantineTicker } = require('../handlers/quarantineHandler');
       initQuarantineTicker(client);
-      const { initInviteTracker } = require('../services/inviteService');
-      await initInviteTracker(client);
-      const { initActivitySwitcher } = require('../handlers/activityHandler');
       initActivitySwitcher(client);
     } catch (err) {
-      console.warn('Ticker/Tracker warning:', err.message);
+      console.warn('Ticker warning:', err.message);
     }
   }
 };
