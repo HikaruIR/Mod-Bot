@@ -68,7 +68,18 @@ const db = {
   giveaways: new Database('giveaways', {}),
   blacklist: new Database('blacklist', {}),
   config: new Database('config', {}),
-  tempbans: new Database('tempbans', {})
+  tempbans: new Database('tempbans', {}),
+  products: new Database('products', {}),
+  orders: new Database('orders', {}),
+  keywords: new Database('keywords', {}),
+  triggers: new Database('triggers', {}),
+  warranties: new Database('warranties', {}),
+  invites: new Database('invites', {}),
+  memberJoins: new Database('memberJoins', {}),
+  quarantine: new Database('quarantine', {}),
+  news: new Database('news', {}),
+  mutes: new Database('mutes', {}),
+  logs: new Database('logs', {})
 };
 
 module.exports = db;

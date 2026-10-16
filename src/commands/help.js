@@ -3,54 +3,75 @@ const config = require('../../config');
 
 module.exports = {
   name: 'help',
-  description: 'Display all available commands and their usage instructions',
+  description: 'Complete Ocean Bot command list and system guide',
   async execute(message, args) {
     const embed = new EmbedBuilder()
-      .setColor(config.colors.primary)
-      .setTitle('🤖 Bot Commands & Modules')
-      .setDescription('Here is a complete list of commands available in this bot:')
+      .setTitle(`${config.emojis.shop} ${config.brand.name} Command Guide`)
+      .setDescription(
+        `Multi-purpose management platform with advanced private ticket departments, full moderation suite, join & invite logger, giveaways, and automated keyword responses.\n\n` +
+        `**Default Prefix:** \`${process.env.PREFIX || '!'}\` | Supported via Slash Commands (/) and Prefix (!).`
+      )
+      .setColor('#5865F2')
       .addFields(
         {
-          name: '🎫 Ticket System Commands',
+          name: '🛡️ Moderation System',
           value:
-            '`!panel create [name] [dropdown(enable/disable)] [form(enable/disable)] [support-role] [mention-role]`\n' +
-            '`!panel dropdownstyle [add/remove/edit] [name] [desc] [emoji] [category-id]`\n' +
-            '`!panel form [create/edit/delete] "Q1" "Q2" "Q3"`\n' +
-            '`!panel delete [panel-name]`\n' +
-            '`!panel support [set/unset] [user/role]`\n' +
-            '`!panel setadmin [set/unset] [user/role]`'
+            '`!lock [#channel]` - Lock a channel from sending messages\n' +
+            '`!unlock [#channel]` - Unlock a locked channel\n' +
+            '`!hide [#channel]` - Hide a channel from @everyone\n' +
+            '`!unhide [#channel]` - Make channel visible again\n' +
+            '`!purge <1-100>` - Bulk delete messages\n' +
+            '`!slow <seconds>` - Set channel slowmode\n' +
+            '`!kick @user [reason]` - Kick a member\n' +
+            '`!ban @user [reason]` - Permanently ban a member\n' +
+            '`!unban <user_id>` - Unban a user\n' +
+            '`!to @user <duration> [reason]` - Timeout member (e.g. 10m, 1h)\n' +
+            '`!unto @user` - Remove timeout from member'
         },
         {
-          name: '🎉 Giveaway System Commands',
+          name: '👋 Welcome & Invite Logger',
           value:
-            '`!giveaway start [time] [winners] [prize]` (e.g. `!giveaway start 10m 1w Nitro`)\n' +
-            '`!giveaway end [message-id]`\n' +
-            '`!giveaway reroll [message-id]`\n' +
-            '`!giveaway blacklist [user/role]`\n' +
-            '`!giveaway unblacklist [user/role]`\n' +
-            '`!giveaway prizechange [message-id] [new-prize]`\n' +
-            '`!giveaway winnerchange [message-id] [count]`'
+            '`!welcome set #channel` - Configure join / welcome logger channel\n' +
+            '`!welcome test` - Test the exact welcome embed design\n' +
+            '`!invites [@user]` - Check regular, leaves, fake, and total invites'
         },
         {
-          name: '🛡️ Moderation Commands',
+          name: '🎫 Private Ticket System',
           value:
-            '`!ban @user [time] [reason]` (Sends reason in DM, supports tempban)\n' +
-            '`!unban [user-id]`\n' +
-            '`!kick @user [reason]`\n' +
-            '`!to @user [time] [reason]` (Timeout/Mute)\n' +
-            '`!unto @user` (Remove Timeout)\n' +
-            '`!lock [channel]`\n' +
-            '`!unlock [channel]`\n' +
-            '`!hide [channel]` (Hide for normal users)\n' +
-            '`!unhide [channel]`\n' +
-            '`!oprole [set/unsetup] [role-id]`\n' +
-            '`!op @user` (Assign OP role with full perms)\n' +
-            '`!deop @user` (Revoke OP role)'
+            '`!ticket panel` - Deploy interactive ticket panel with select menu & buttons\n' +
+            '`!ticket create <type>` - Open a private ticket directly\n' +
+            '`!ticket add @user` - Grant member access to current ticket\n' +
+            '`!ticket remove @user` - Revoke member access from current ticket\n' +
+            '`!ticket setcategory <type> <cat_id>` - Set category per department\n' +
+            '*Controls:* 🔒 Close | 🔓 Reopen | ✋ Claim | ➕ Add | ➖ Remove | 🗑️ Delete (Auto-Transcript)'
+        },
+        {
+          name: '🎉 Giveaway System',
+          value:
+            '`!giveaway start <time> <winners>w <prize>` - Launch interactive giveaway\n' +
+            '`!giveaway reroll <message_id>` - Pick new winners\n' +
+            '`!giveaway end <message_id>` - End giveaway immediately\n' +
+            '`!giveaway list` - View active giveaways'
+        },
+        {
+          name: '🔑 Keyword Auto-Replies & Triggers',
+          value:
+            '`!keyword add <word> <response>` - Register automatic response\n' +
+            '`!keyword remove <word>` - Remove automatic response\n' +
+            '`!keyword list` - List registered keywords\n' +
+            '`!trigger add <response>` - Automated response when receipt image is uploaded'
+        },
+        {
+          name: '⚙️ Configuration & Logging',
+          value:
+            '`!config setstaff @Role` - Add staff role\n' +
+            '`!config setlog #channel` - Configure audit log channel\n' +
+            '`!config view` - View current settings'
         }
       )
-      .setFooter({ text: 'Prefix: ! • Discord.js v14' })
+      .setFooter({ text: `${config.brand.footer} • Watching Ocean🐋`, iconURL: config.brand.avatar })
       .setTimestamp();
 
-    return message.reply({ embeds: [embed] });
+    return message.channel.send({ embeds: [embed] });
   }
 };

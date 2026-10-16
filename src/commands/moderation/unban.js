@@ -44,6 +44,8 @@ module.exports = {
         .setFooter({ text: `Moderator: ${message.author.tag}` })
         .setTimestamp();
 
+      const { sendModLog } = require('../../utils/logger');
+      await sendModLog(guild, embed);
       return message.reply({ embeds: [embed] });
     } catch (err) {
       console.error('Unban error:', err);

@@ -2,10 +2,11 @@ const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const db = require('../../utils/database');
 const config = require('../../../config');
 const { parseDuration, formatDuration } = require('../../utils/timeParser');
+const { sendModLog } = require('../../utils/logger');
 
 module.exports = {
   name: 'ban',
-  description: 'Ban a member permanently or temporarily, with DM notification and reason',
+  description: 'Ban a member permanently or temporarily with reason and duration',
   async execute(message, args) {
     const member = message.member;
     const guild = message.guild;
@@ -21,7 +22,7 @@ module.exports = {
     const targetUser = message.mentions.users.first() || (args[0] ? await message.client.users.fetch(args[0].replace(/[^0-9]/g, '')).catch(() => null) : null);
     if (!targetUser) {
       return message.reply({
-        content: `${config.emojis.error} **Invalid usage!**\nFormat: \`!ban @user [time] [reason]\`\nExample: \`!ban @Mohammad 1d Rule violations\``
+        content: `${config.emojis.error} **Invalid usage!**\nFormat: \`!ban @user [reason] [time]\` or \`!ban @user [time] [reason]\`\nExample: \`!ban @User Breaking rules 1d\``
       });
     }
 
@@ -40,50 +41,61 @@ module.exports = {
       }
 
       if (!targetMember.bannable) {
-        return message.reply({ content: `${config.emojis.error} I cannot ban this member! Check my role hierarchy and permissions.` });
+        return message.reply({ content: `${config.emojis.error} I cannot ban this member! Check role hierarchy.` });
       }
     }
 
-    // Check if second argument is duration (e.g., 1d, 2h, 30m)
+    // Determine duration and reason
     let durationMs = null;
-    let reasonStartIndex = 1;
+    let reasonParts = [];
 
-    if (args[1]) {
-      const parsed = parseDuration(args[1]);
-      if (parsed) {
-        durationMs = parsed;
-        reasonStartIndex = 2;
+    const remainingArgs = args.slice(1);
+    if (remainingArgs.length > 0) {
+      // Check first remaining arg
+      const firstCheck = parseDuration(remainingArgs[0]);
+      if (firstCheck) {
+        durationMs = firstCheck;
+        reasonParts = remainingArgs.slice(1);
+      } else {
+        // Check last remaining arg
+        const lastCheck = parseDuration(remainingArgs[remainingArgs.length - 1]);
+        if (lastCheck && remainingArgs.length > 1) {
+          durationMs = lastCheck;
+          reasonParts = remainingArgs.slice(0, remainingArgs.length - 1);
+        } else {
+          reasonParts = remainingArgs;
+        }
       }
     }
 
-    const reason = args.slice(reasonStartIndex).join(' ') || 'No reason provided';
+    const reason = reasonParts.join(' ').trim() || 'No reason provided';
 
-    // 1. Send DM to the banned user
+    // 1. Send DM
     let dmSent = false;
     try {
       const dmEmbed = new EmbedBuilder()
         .setColor(config.colors.danger)
         .setTitle(`🔨 You have been banned from ${guild.name}`)
         .addFields(
-          { name: 'Reason', value: reason },
-          { name: 'Duration', value: durationMs ? formatDuration(durationMs) : 'Permanent' },
-          { name: 'Banned By', value: message.author.tag }
+          { name: 'Reason', value: reason, inline: true },
+          { name: 'Duration', value: durationMs ? formatDuration(durationMs) : 'Permanent', inline: true },
+          { name: 'Banned By', value: message.author.tag, inline: true }
         )
         .setTimestamp();
 
       await targetUser.send({ embeds: [dmEmbed] });
       dmSent = true;
-    } catch (dmErr) {
+    } catch {
       dmSent = false;
     }
 
-    // 2. Perform the ban
+    // 2. Execute Ban
     try {
       await guild.members.ban(targetUser.id, {
         reason: `${reason} | Banned by ${message.author.tag}${durationMs ? ` (${formatDuration(durationMs)})` : ''}`
       });
 
-      // 3. If temporary ban, store in database
+      // 3. Store tempban if temporary
       if (durationMs) {
         const guildTempbans = db.tempbans.get(guild.id) || [];
         guildTempbans.push({
@@ -97,19 +109,20 @@ module.exports = {
       const responseEmbed = new EmbedBuilder()
         .setColor(config.colors.danger)
         .setTitle(`🔨 Member Banned`)
-        .setDescription(`Successfully banned **${targetUser.tag}** (${targetUser.id})`)
+        .setDescription(`Successfully banned **${targetUser.tag}** (\`${targetUser.id}\`)`)
         .addFields(
           { name: 'Reason', value: reason, inline: true },
           { name: 'Duration', value: durationMs ? formatDuration(durationMs) : 'Permanent', inline: true },
-          { name: 'User DM', value: dmSent ? '✅ Notified' : '⚠️ Closed DMs', inline: true }
+          { name: 'DM Notification', value: dmSent ? '✅ Delivered' : '⚠️ Closed DMs', inline: true }
         )
         .setFooter({ text: `Moderator: ${message.author.tag}` })
         .setTimestamp();
 
-      return message.reply({ embeds: [responseEmbed] });
-    } catch (banErr) {
-      console.error('Ban error:', banErr);
-      return message.reply({ content: `${config.emojis.error} Failed to ban user: ${banErr.message}` });
+      await message.reply({ embeds: [responseEmbed] });
+      await sendModLog(guild, responseEmbed);
+    } catch (err) {
+      console.error('Ban error:', err);
+      return message.reply({ content: `${config.emojis.error} Failed to ban user: ${err.message}` });
     }
   }
 };

@@ -5,16 +5,27 @@ const {
   Client,
   GatewayIntentBits,
   Partials,
-  Collection
+  Collection,
+  ActivityType
 } = require('discord.js');
 
 const client = new Client({
+  presence: {
+    status: 'dnd',
+    activities: [
+      {
+        name: 'Ocean🐋',
+        type: ActivityType.Watching
+      }
+    ]
+  },
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.GuildMessageReactions
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.GuildVoiceStates
   ],
   partials: [
     Partials.Message,
@@ -25,6 +36,7 @@ const client = new Client({
 });
 
 client.commands = new Collection();
+client.slashCommands = new Collection();
 
 /**
  * Recursively load all command files
@@ -41,6 +53,11 @@ function loadCommands(dir) {
         if (command.name && typeof command.execute === 'function') {
           client.commands.set(command.name, command);
           console.log(`[Command Loaded] !${command.name}`);
+        }
+        if (command.slashData || typeof command.executeSlash === 'function') {
+          const slashName = command.slashData ? command.slashData.name : command.name;
+          client.slashCommands.set(slashName, command);
+          console.log(`[SlashCommand Loaded] /${slashName}`);
         }
       } catch (err) {
         console.error(`Failed to load command at ${fullPath}:`, err);
@@ -80,10 +97,10 @@ process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception thrown:', err);
 });
 
-// Start the bot
-const token = process.env.DISCORD_TOKEN;
+// Start the bot (supports DISCORD_BOT_TOKEN or DISCORD_TOKEN)
+const token = process.env.DISCORD_BOT_TOKEN || process.env.DISCORD_TOKEN;
 if (!token || token === 'your_bot_token_here') {
-  console.error('❌ DISCORD_TOKEN is missing or not configured in .env file!');
+  console.error('❌ DISCORD_BOT_TOKEN / DISCORD_TOKEN is missing or not configured!');
   process.exit(1);
 }
 
