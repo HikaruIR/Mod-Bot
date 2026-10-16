@@ -49,7 +49,7 @@ function initActivitySwitcher(client) {
           client.user.setPresence({
             activities: [
               {
-                name: 'Minecraft',
+                name: 'Play.SevinCraft.ir',
                 type: ActivityType.Playing
               }
             ],

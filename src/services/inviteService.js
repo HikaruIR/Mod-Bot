@@ -128,7 +128,7 @@ async function handleMemberJoin(member) {
 
   // Find target channel: welcome channel, join channel, or log channel
   const guildConfig = getGuildConfig(guild.id);
-  const targetChannelId = guildConfig.welcomeChannelId || guildConfig.joinChannelId || guildConfig.logChannelId;
+  const targetChannelId = (guildConfig.welcome && guildConfig.welcome.enabled !== false && guildConfig.welcome.channelId) || guildConfig.welcomeChannelId;
 
   if (targetChannelId) {
     const channel = guild.channels.cache.get(targetChannelId);
@@ -209,25 +209,26 @@ async function handleMemberLeave(member) {
   const now = new Date();
   const dateFormatted = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-  const guildConfig = getGuildConfig(guild.id);
-  const targetChannelId = guildConfig.leaveChannelId || guildConfig.welcomeChannelId || guildConfig.logChannelId;
-
-  if (targetChannelId) {
-    const channel = guild.channels.cache.get(targetChannelId);
+  const goodbyeConfig = db.goodbye.get(guild.id);
+  if (goodbyeConfig && goodbyeConfig.enabled && goodbyeConfig.channelId) {
+    const channel = guild.channels.cache.get(goodbyeConfig.channelId);
     if (channel && channel.isTextBased()) {
-      let invitedByValue = 'Direct Link / Unknown';
-      if (inviter) {
-        invitedByValue = `${inviter.username} (now has ${inviterStats.total} invites)`;
+      let descriptionText = `Goodbye **${member.user.tag}**! We now have ${guild.memberCount} members in **${guild.name}**.`;
+      if (goodbyeConfig.message) {
+        descriptionText = goodbyeConfig.message
+          .replace(/<user>/g, `**${member.user.tag}**`)
+          .replace(/<server>/g, guild.name)
+          .replace(/<membersnow>/g, guild.memberCount.toString());
       }
 
       const embed = new EmbedBuilder()
-        .setTitle(`🚪 Member Left`)
-        .setDescription(`**${member.user.tag}** left **${guild.name}**.\nInvited by: ${invitedByValue}`)
+        .setTitle(`🚪 Member Left ${guild.name}`)
+        .setDescription(descriptionText)
         .setColor(config.colors.danger)
-        .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 256 }))
+        .setThumbnail(member.user.displayAvatarURL({ extension: 'png', forceStatic: false, size: 512 }))
         .addFields(
           { name: '👤 Member', value: `${member.user.username}\n( \`${member.id}\` )`, inline: true },
-          { name: '📊 Member Count', value: `#${guild.memberCount}`, inline: true }
+          { name: '📊 Remaining Members', value: `#${guild.memberCount}`, inline: true }
         )
         .setFooter({
           text: `${guild.name} • User Left • ${dateFormatted}`,

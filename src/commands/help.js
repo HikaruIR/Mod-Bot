@@ -6,64 +6,69 @@ module.exports = {
   aliases: ['h', 'commands'],
   description: 'List all commands and capabilities for Sevinnny server',
   async execute(message, args) {
-    const prefix = process.env.PREFIX || config.defaultPrefix || '!';
+    const prefix = process.env.PREFIX || config.defaultPrefix || '?';
 
     const embed = new EmbedBuilder()
       .setColor(config.colors.primary)
-      .setTitle(`✨ ${config.brand.name} Bot Commands Menu`)
-      .setDescription(`Welcome to **${config.brand.name}** official bot! Prefix: \`${prefix}\``)
+      .setTitle(`✨ منوی راهنمای ربات سرور ${config.brand.name}`)
+      .setDescription(`پیشوند دستورات: \`${prefix}\``)
       .addFields(
         {
-          name: '🛡️ Moderation Commands',
+          name: '🛡️ دستورات مدیریت (Moderation)',
           value:
-            `\`${prefix}ban [user] [reason] [time]\` - Ban permanently or temporarily\n` +
-            `\`${prefix}unban [user-id]\` - Unban member\n` +
-            `\`${prefix}mute [user] [reason] [time]\` - Mute member (with auto-unmute)\n` +
-            `\`${prefix}unmute [user]\` - Unmute member\n` +
-            `\`${prefix}timeout [user] [reason] [time]\` - Discord native timeout\n` +
-            `\`${prefix}untimeout [user]\` - Remove timeout\n` +
-            `\`${prefix}qr [user] [reason] [time]\` - Quarantine member (hides all channels)\n` +
-            `\`${prefix}unqr [user]\` - Remove quarantine and restore roles\n` +
-            `\`${prefix}logchannel [channel] [set/unset]\` - Configure log channel`
+            `\`${prefix}ban [user] [reason] [time]\` - بن دائم یا موقت کاربر\n` +
+            `\`${prefix}unban [user-id]\` - آن‌بن کاربر با آیدی\n` +
+            `\`${prefix}mute [user] [reason] [time]\` - میوت کاربر با زمان انقضا\n` +
+            `\`${prefix}unmute [user]\` - آن‌میوت کاربر\n` +
+            `\`${prefix}timeout [user] [reason] [time]\` - تایم‌اوت نیتیو دیسکورد\n` +
+            `\`${prefix}untimeout [user]\` - لغو تایم‌اوت\n` +
+            `\`${prefix}qr [user] [reason] [time]\` - قرنطینه و بستن تمام چنل‌ها\n` +
+            `\`${prefix}unqr [user]\` - حذف قرنطینه و بازگردانی رول‌ها\n` +
+            `\`${prefix}logchannel [channel] [set/unset]\` - تنظیم چنل لاگ سرور`
         },
         {
-          name: '🔒 Channel Controls',
+          name: '🎫 سیستم تیکت حرفه‌ای (Ticket System)',
           value:
-            `\`${prefix}lock [channel]\` - Lock channel from sending messages\n` +
-            `\`${prefix}unlock [channel]\` - Unlock channel\n` +
-            `\`${prefix}hide [channel]\` - Hide channel from @everyone\n` +
-            `\`${prefix}show [channel]\` - Make channel visible to @everyone`
+            `\`${prefix}ticket panel #channel\` - ارسال پنل تیکت همراه با دراپ‌دان (Dropdown)\n` +
+            `\`${prefix}ticket support @role\` - تنظیم رول پشتیبانان تیکت\n` +
+            `\`${prefix}ticket category [general/report/store/technical] [categoryId]\` - انتقال هر بخش تیکت به یک کتگوری اختصاصی\n` +
+            `\`${prefix}ticket close\` - بستن و حذف تیکت جاری\n` +
+            `\`${prefix}ticket add @user\` - اضافه کردن کاربر به تیکت\n` +
+            `\`${prefix}ticket remove @user\` - حذف کاربر از تیکت`
         },
         {
-          name: '👋 Welcome System (Embed & Square Profile)',
+          name: '🔒 کنترل چنل‌ها (Channel Controls)',
           value:
-            `\`${prefix}welcome setup [message] [channel]\` - Variables: \`<user>\`, \`<server>\`, \`<membersnow>\`\n` +
-            `\`${prefix}welcome test\` - Test welcome embed in configured channel\n` +
-            `\`${prefix}welcome delete\` - Disable welcome system`
+            `\`${prefix}lock [channel]\` - قفل کردن ارسال پیام در چنل\n` +
+            `\`${prefix}unlock [channel]\` - باز کردن ارسال پیام\n` +
+            `\`${prefix}hide [channel]\` - مخفی کردن چنل برای @everyone\n` +
+            `\`${prefix}show [channel]\` - نمایان کردن چنل برای @everyone`
         },
         {
-          name: '📢 News & Announcers',
+          name: '👋 سیستم ولکام و جوین (مستقل از گودبای)',
           value:
-            `\`${prefix}livenews [enable/disable] [channel] [message] [liveurl] [mentions]\` - Stream auto alert\n` +
-            `\`${prefix}medianews [enable/disable] [channel] [message] [mediaurl] [mentions]\` - Media auto alert`
+            `\`${prefix}welcome setup [message] [channel]\` - متغیرها: \`<user>\`, \`<server>\`, \`<membersnow>\`\n` +
+            `\`${prefix}welcome test\` - تست امبد ولکام در چنل مشخص‌شده\n` +
+            `\`${prefix}welcome delete\` - غیرفعال‌سازی ولکام`
         },
         {
-          name: '🎵 Music Player (YouTube, Spotify, SoundCloud, Search)',
+          name: '🚪 سیستم گودبای و لفت (مستقل از ولکام)',
           value:
-            `\`${prefix}play [song name/url]\` - Play or search music\n` +
-            `\`${prefix}pause\` / \`${prefix}resume\` - Pause or resume playback\n` +
-            `\`${prefix}stop\` - Stop playing & clear queue\n` +
-            `\`${prefix}next\` / \`${prefix}skip\` - Skip current track\n` +
-            `\`${prefix}previous\` - Play previous track\n` +
-            `\`${prefix}queue\` - View upcoming songs\n` +
-            `\`${prefix}nowplaying\` - View currently playing song\n` +
-            `\`${prefix}join\` / \`${prefix}leave\` - Connect/disconnect from voice`
+            `\`${prefix}goodbye setup [message] [channel]\` - متغیرها: \`<user>\`, \`<server>\`, \`<membersnow>\`\n` +
+            `\`${prefix}goodbye test\` - تست امبد لفت در چنل مشخص‌شده\n` +
+            `\`${prefix}goodbye delete\` - غیرفعال‌سازی گودبای`
         },
         {
-          name: '📊 Reaction Polls',
+          name: '📢 خبررسان خودکار (Live & Media)',
           value:
-            `\`${prefix}poll [question]\` - Yes / No reaction poll\n` +
-            `\`${prefix}poll "Question" "Opt 1" "Opt 2"\` - Multiple-choice poll`
+            `\`${prefix}livenews [enable/disable] [channel] [message] [liveurl] [mentions]\` - استریم الرت\n` +
+            `\`${prefix}medianews [enable/disable] [channel] [message] [mediaurl] [mentions]\` - مدیا الرت`
+        },
+        {
+          name: '🔊 ویس و نظرسنجی',
+          value:
+            `\`${prefix}join\` - جوین شدن بات به ویس چنل کاربر\n` +
+            `\`${prefix}poll [question]\` - نظرسنجی با ری‌اکشن بله/خیر یا چندگزینه‌ای`
         }
       )
       .setFooter({

@@ -1,5 +1,5 @@
 module.exports = {
-  defaultPrefix: '!',
+  defaultPrefix: '?',
   brand: {
     name: 'Sevinnny',
     footer: 'Sevinnny Server • Official Bot',
@@ -11,10 +11,13 @@ module.exports = {
     warning: '#f1c40f',     // Warning Gold
     danger: '#e74c3c',      // Coral Red
     neutral: '#2c3e50',     // Dark Slate
-    music: '#3498db'        // Music Blue
+    ticket: '#8e44ad'       // Ticket Violet
   },
   emojis: {
-    music: '🎵',
+    ticket: '🎫',
+    claim: '✋',
+    close: '🔒',
+    transcript: '📜',
     mod: '🛡️',
     ban: '🔨',
     mute: '🔇',
@@ -26,6 +29,7 @@ module.exports = {
     hide: '👁️‍🗨️',
     show: '👁️',
     welcome: '👋',
+    goodbye: '🚪',
     news: '📢',
     live: '🔴',
     media: '🎬',

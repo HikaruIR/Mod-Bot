@@ -79,7 +79,8 @@ const db = {
   quarantine: new Database('quarantine', {}),
   news: new Database('news', {}),
   mutes: new Database('mutes', {}),
-  logs: new Database('logs', {})
+  logs: new Database('logs', {}),
+  goodbye: new Database('goodbye', {})
 };
 
 module.exports = db;
